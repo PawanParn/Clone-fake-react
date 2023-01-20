@@ -33,7 +33,7 @@ function AuthContainer(){
             </div>
           </div>
         </div>
-        {/* <RegisterModal /> */}
+
       </div>
     )
 

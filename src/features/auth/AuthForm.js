@@ -2,6 +2,7 @@
 import LoginForm from "./LoginForm";
 import Modal from "../../component/Ui/Modal"
 import { useState } from "react";
+import RegisterForm from "./RegisterForm";
 
 
 function AuthForm() {
@@ -21,8 +22,8 @@ function AuthForm() {
                 Create New Account
             </button>
             </div>
-            <Modal title='Test' open={isOpen} onClose={()=>{setIsOpen(false)}}>
-                Modal Children body
+            <Modal title='Sign up' open={isOpen} onClose={()=>{setIsOpen(false)}}>
+                <RegisterForm onSuccess={()=> setIsOpen(false)} />
             </Modal>
     </div>
     )
