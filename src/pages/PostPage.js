@@ -1,6 +1,10 @@
+import Header from "../layout/header/header";
+
 function PostPage(){
     return (
-        <h1> This is post pages</h1>
-    )}
+        
+        // <Header />
+        <h1> This is Post pages</h1>
+        )}
 
     export default PostPage;

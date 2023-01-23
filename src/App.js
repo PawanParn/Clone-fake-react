@@ -13,7 +13,7 @@ function App() {
     <>
       {loading && <Spinner/>}
       <Router />
-      <ToastContainer autoClose={2500} theme="colored" position="bottom-right" />
+      <ToastContainer autoClose="1000" theme="colored" position="bottom-right" />
     </>
   );
 }
