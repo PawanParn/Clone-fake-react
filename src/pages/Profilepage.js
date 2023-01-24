@@ -1,6 +1,10 @@
+import ProfileContainer from "../features/profiles/ProfileContainer";
+
 function Profile(){
     return (
-        <h1> This is profile pages</h1>
+        <>
+        <ProfileContainer />
+        </>
     )}
 
     export default Profile;

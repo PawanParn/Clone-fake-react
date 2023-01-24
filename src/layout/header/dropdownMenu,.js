@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import Avatar from "../../component/Ui/Avatar";
 import { useAuth } from "../../context/authContext";
 
-function DropdownMenu({ open }){
+function DropdownMenu({ open, onClose }){
 
     const {logout, user : { profileImage, firstName , lastName  } }= useAuth();
 
@@ -13,6 +13,7 @@ function DropdownMenu({ open }){
                   <Link
                     to="/profile"
                     className="dropdown-item p-2 d-flex align-items-center gap-3 hover-bg-neutral-100 hover-rounded-lg"
+                    onClick={onClose}
                   >
                     <Avatar
                       src={profileImage}
