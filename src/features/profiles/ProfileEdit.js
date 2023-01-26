@@ -16,8 +16,8 @@ function ProfileEdit(){
             title='Edit profile' 
             open={isOpen}
             onClose={()=> setIsOpen(false)}>
-                <ProfileImageForm />
-                <CoverImageForm />
+                <ProfileImageForm onCloseProfile={()=> setIsOpen(false)}/>
+                <CoverImageForm onCloseCover={()=> setIsOpen(false)}/>
             </Modal>
         </>
     )

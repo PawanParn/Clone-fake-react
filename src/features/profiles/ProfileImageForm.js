@@ -1,17 +1,38 @@
 import { useRef, useState } from "react";
 import Avatar from "../../component/Ui/Avatar";
 import { useAuth } from "../../context/authContext";
-import CoverImageForm from "./CoverImageForm";
+import { useLoading } from '../../context/loadingContext'
+import { toast } from "react-toastify";
 
-function ProfileImageForm(){
+
+function ProfileImageForm({ onCloseProfile }){
     
-    const { user : {profileImage} } = useAuth();
+    const { user : {profileImage} , updateUser } = useAuth();
     
+    const { startLoading , stopLoading } = useLoading()
+
     const [file , setFile ] = useState(null)
 
     // if(file)console.log(URL.createObjectURL(file));
 
     const inputE1 = useRef();
+
+    const handleClickSave = async () => {
+      try {
+        startLoading();
+        const formData = new FormData();
+        formData.append('profileImage', file);
+        await updateUser(formData);
+        onCloseProfile();
+        setFile(null);
+        toast.success('success upload')
+      }catch(err){
+        console.log(err);
+        toast.error(err.response?.data.message);
+      }finally{
+        stopLoading();
+      }
+    }
 
     return (
         <>
@@ -30,7 +51,9 @@ function ProfileImageForm(){
               <div>
                 {file && (
                 <>
-                    <button className="btn btn-link text-decoration-none hover-bg-gray-100">
+                    <button 
+                      className="btn btn-link text-decoration-none hover-bg-gray-100"
+                      onClick={handleClickSave}>
                       Save
                     </button>
                     <button className="btn btn-link text-decoration-none hover-bg-gray-100"
@@ -54,7 +77,7 @@ function ProfileImageForm(){
                     <Avatar src={file ? URL.createObjectURL(file) : profileImage} size="168"/>
                 </span>
             </div>
-            <CoverImageForm />
+       
         </>
     )
 }

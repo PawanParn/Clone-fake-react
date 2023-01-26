@@ -3,7 +3,6 @@ import CoverImage from "../../component/Ui/CoverImage";
 
 function ProfileCover({ coverImage }){
     
-  
 
     return(
         

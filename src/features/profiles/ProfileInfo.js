@@ -1,10 +1,10 @@
 import Avatar from "../../component/Ui/Avatar";
-import { useAuth } from "../../context/authContext";
+// import { useAuth } from "../../context/authContext";
 import ProfileEdit from "./ProfileEdit";
 
-function ProfileInfo({ isMe }){
+function ProfileInfo({ isMe , user : { profileImage , firstName , lastName } ,friend}){
     
-    const { user : { profileImage , firstName , lastName } } =useAuth()
+    // const { user : { profileImage , firstName , lastName } } =useAuth()
     
     return (
         <>
@@ -13,12 +13,14 @@ function ProfileInfo({ isMe }){
                  <Avatar
                       src={profileImage}
                       size="168"
+                      borderSize="4"
+                      borderColor="white"
                     />
           </div>
 
           <div className="my-3 flex-grow-1 d-flex flex-column align-items-center d-md-block">
             <h2 className="fw-bold mb-0">{firstName} {lastName}</h2>
-            <span className="d-inline-block text-muted py-1">5 Friends</span>
+            <span className="d-inline-block text-muted py-1">{friend.length} Friends</span>
             <div>
               <span>
                 <img

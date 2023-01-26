@@ -2,14 +2,35 @@ import { useRef } from "react";
 import { useState } from "react";
 import CoverImage from "../../component/Ui/CoverImage";
 import { useAuth } from "../../context/authContext";
+import { useLoading } from "../../context/loadingContext";
+import { toast } from "react-toastify";
 
-function CoverImageForm(){
+function CoverImageForm({ onCloseCover }){
 
-  const { user : {coverImage} } = useAuth();
+  const { user : {coverImage} , updateUser} = useAuth();
+
+  const { startLoading , stopLoading } = useLoading();
 
   const [file , setFile ] = useState(null);
 
   const inputE1 = useRef();
+
+  const handleClickSave = async () => {
+    try {
+      startLoading();
+      const formData = new FormData();
+      formData.append('coverImage', file);
+      await updateUser(formData);
+      onCloseCover();
+      setFile(null);
+      toast.success('success upload')
+    }catch(err){
+      console.log(err);
+      toast.error(err.response?.data.message);
+    }finally{
+      stopLoading();
+    }
+  }
 
   return (
         <>
@@ -28,7 +49,8 @@ function CoverImageForm(){
               <div>
               {file && (
                 <>
-                    <button className="btn btn-link text-decoration-none hover-bg-gray-100">
+                    <button className="btn btn-link text-decoration-none hover-bg-gray-100"
+                            onClick={handleClickSave}>
                       Save
                     </button>
                     <button className="btn btn-link text-decoration-none hover-bg-gray-100"
@@ -47,7 +69,7 @@ function CoverImageForm(){
               </div>
             </div>
             <div
-              className="overflow-hidden position-relative mt-3 rounded-lg max-w-274 max-h-101"
+              className="overflow-hidden position-relative mt-3 rounded-lg max-w-274 max-h-101 cursor-pointer"
               style={{
                 aspectRatio: '1096/404'
               }}
