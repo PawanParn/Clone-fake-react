@@ -1,10 +1,44 @@
 import Avatar from "../../component/Ui/Avatar";
+import AvatarGroup from "../../component/Ui/AvatarGroup";
 // import { useAuth } from "../../context/authContext";
 import ProfileEdit from "./ProfileEdit";
+import * as friendService from '../../api/firendApi'
+import { useLoading } from "../../context/loadingContext";
+import { toast } from "react-toastify";
+import { FRIEND_STATUS_ANNONYMOUS } from "../../config/constants";
 
-function ProfileInfo({ isMe , user : { profileImage , firstName , lastName } ,friend}){
+function ProfileInfo({ 
+            isMe , 
+            user : { profileImage , firstName , lastName ,id} ,
+            friends ,
+            isFriend ,
+            isAnonymous,
+            isRequester,
+            isAccepter,
+            changeStatusWithMe,
+            deleteFriend
+          }){
     
-    // const { user : { profileImage , firstName , lastName } } =useAuth()
+    const { startLoading, stopLoading } = useLoading();
+
+
+    const handleClickDelete = async () => {
+      try{
+        startLoading();
+        await friendService.deleteFriend(id);
+        changeStatusWithMe(FRIEND_STATUS_ANNONYMOUS);
+        if(isFriend){
+          deleteFriend();
+        };
+        toast.success('Success delete friend')
+      }catch(err){
+        console.log(err)
+        toast.error(err.response?.data.message);
+      }finally{
+        stopLoading();
+      }
+      
+    }
     
     return (
         <>
@@ -20,58 +54,40 @@ function ProfileInfo({ isMe , user : { profileImage , firstName , lastName } ,fr
 
           <div className="my-3 flex-grow-1 d-flex flex-column align-items-center d-md-block">
             <h2 className="fw-bold mb-0">{firstName} {lastName}</h2>
-            <span className="d-inline-block text-muted py-1">{friend.length} Friends</span>
-            <div>
-              <span>
-                <img
-                  src="https://images.pexels.com/photos/654696/pexels-photo-654696.jpeg"
-                  className="rounded-circle border border-2 border-white"
-                  height="32"
-                  width="32"
-                  alt="user"
-                />
-              </span>
-              <span className="-ms-2">
-                <img
-                  src="https://images.pexels.com/photos/6986009/pexels-photo-6986009.jpeg"
-                  className="rounded-circle border border-2 border-white"
-                  height="32"
-                  width="32"
-                  alt="user"
-                />
-              </span>
-              <span className="-ms-2">
-                <img
-                  src="https://images.unsplash.com/photo-1597248374161-426f0d6d2fc9"
-                  className="rounded-circle border border-2 border-white"
-                  height="32"
-                  width="32"
-                  alt="user"
-                />
-              </span>
-              <span className="-ms-2">
-                <img
-                  src="https://images.unsplash.com/photo-1608109741046-0f246ffe4b9b"
-                  className="rounded-circle border border-2 border-white"
-                  height="32"
-                  width="32"
-                  alt="user"
-                />
-              </span>
-              <span className="-ms-2">
-                <img
-                  src="https://images.unsplash.com/photo-1570752321219-41822a21a761"
-                  className="rounded-circle border border-2 border-white"
-                  height="32"
-                  width="32"
-                  alt="user"
-                />
-              </span>
-            </div>
+            <span className="d-inline-block text-muted py-1">{friends.length} Friends</span>
+          <AvatarGroup 
+            data={friends}
+            size ="32"
+            borderSize="2"
+            borderColor="white"
+            maxAvartar='5'
+            />
           </div>
-
           <div className="mb-3 align-self-md-end">
             {isMe && <ProfileEdit />}
+            {isFriend && (        
+              <button className="btn btn-gray-200" onClick={handleClickDelete}>
+                  <i className="fa-solid fa-user-xmark" /> Unfriend
+              </button>)}
+            {isAnonymous && (        
+              <button className="btn btn-gray-200" >
+                  <i className="fa-solid fa-user-plus" /> Add Friends
+              </button>)}  
+            {isRequester && (        
+              <button className="btn btn-gray-200" >
+                  <i className="fa-solid fa-user-xmark" /> Cancel Request
+              </button>)}
+            {isAccepter && (  
+              <>
+              <button className="btn btn-gray-200 bg-success" onClick={handleClickDelete}>
+                  <i className="fa-solid fa-user-check" /> Accept
+              </button>
+              <button className="btn btn-gray-200 ms-3 bg-danger" onClick={handleClickDelete} >
+                  <i className="fa-solid fa-user-xmark" /> Reject
+              </button>
+              </>      
+              )}    
+
           </div>
         </div>
         </>

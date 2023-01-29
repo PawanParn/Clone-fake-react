@@ -5,22 +5,21 @@ import ProfileCover from "./ProfileCover";
 import ProfileInfo from "./ProfileInfo";
 import * as userService from '../../api/userApi'
 import { toast } from "react-toastify";
-import { FRIEND_STATUS_ME } from "../../config/constants";
+import { FRIEND_STATUS_ACCEPTER, FRIEND_STATUS_ANNONYMOUS, FRIEND_STATUS_FRIEND, FRIEND_STATUS_ME, FRIEND_STATUS_REQUESTER } from "../../config/constants";
 import { useAuth } from "../../context/authContext";
 
 
 function ProfileContainer(){
     
     const { id } = useParams();
-    
-    const { user: me } = useAuth()
 
-
-    const [user , setUser ] = useState({});
-    const [friend , setFriend ] = useState({});
-    const [statusWithMe , setStatusWithMe ] = useState('');
-
-    const { startLoading , stopLoading } = useLoading();
+    const [user, setUser] = useState({});
+    const [friends, setFriends] = useState([]);
+    const [statusWithMe, setStatusWithMe] = useState('');
+  
+    const { startLoading, stopLoading } = useLoading();
+    const { user: me } = useAuth();
+  
 
     useEffect(()=>{
         const fetchUserFriends = async() => {
@@ -28,28 +27,45 @@ function ProfileContainer(){
                 startLoading();
                 const res = await userService.getUserFriends(id);
                 setUser(res.data.user);
-                setFriend(res.data.friends);
+                setFriends(res.data.friends);
                 setStatusWithMe(res.data.statusWithMe);
                 console.log(res.data.statusWithMe)
             }catch(err){
                 console.log(err);
                 toast.error(err.response?.data.message)
             }finally{
-                stopLoading();
-                
+                stopLoading();    
             }
         };
         fetchUserFriends();
-    },[id , me]);
+    },[id, me ,startLoading , stopLoading]);
     
+    const changeStatusWithMe = nextStatus => {
+        setStatusWithMe(nextStatus)
+    };
+
+    const deleteFriend = () => {
+        const nextFriends = friends.filter(item => item.id !== me.id );
+        setFriends(nextFriends);
+    }
+
+
     return(
         <div  className="shadow-sm pb-2"       
             style={{ backgroundImage: 'linear-gradient(#f0f2f5, #fff)' }}
         >
         <ProfileCover coverImage={user.coverImage}/>
-        <ProfileInfo isMe={statusWithMe === FRIEND_STATUS_ME} 
-                    user={user}  
-                    friend={friend}  
+        <ProfileInfo 
+                isMe={statusWithMe === FRIEND_STATUS_ME} 
+                user={user}  
+                friends={friends}
+                isFriend={statusWithMe === FRIEND_STATUS_FRIEND} 
+                isAnonymous={statusWithMe === FRIEND_STATUS_ANNONYMOUS} 
+                isRequester={statusWithMe === FRIEND_STATUS_REQUESTER}
+                isAccepter={statusWithMe === FRIEND_STATUS_ACCEPTER}
+                changeStatusWithMe={changeStatusWithMe}
+                deleteFriend={deleteFriend}
+            
         />
       </div>
         
