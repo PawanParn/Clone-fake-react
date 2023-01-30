@@ -47,6 +47,10 @@ function ProfileContainer(){
     const deleteFriend = () => {
         const nextFriends = friends.filter(item => item.id !== me.id );
         setFriends(nextFriends);
+    };
+
+    const createFriend = () => {
+        setFriends([...friends , me])
     }
 
 
@@ -65,6 +69,7 @@ function ProfileContainer(){
                 isAccepter={statusWithMe === FRIEND_STATUS_ACCEPTER}
                 changeStatusWithMe={changeStatusWithMe}
                 deleteFriend={deleteFriend}
+                createFriend={createFriend}
             
         />
       </div>

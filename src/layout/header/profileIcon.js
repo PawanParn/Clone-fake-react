@@ -8,19 +8,15 @@ function ProfileIcon(){
 
     const dropdownEl = useRef();
 
-    useEffect(()=>{
-        
+    useEffect(() => {
         const handleClickOutside = e => {
-            if (!dropdownEl.current.contains(e.target)){
-                setIsOpen(false)
-            }
-
-        }
-
-
-        document.addEventListener('mousedown',handleClickOutside)
-    },[])
-
+          if (!dropdownEl.current.contains(e.target)) {
+            setIsOpen(false);
+          }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+      }, []);
 
     return (
         <div className="d-flex justify-content-end flex-1">

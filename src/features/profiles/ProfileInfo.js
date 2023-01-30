@@ -5,7 +5,7 @@ import ProfileEdit from "./ProfileEdit";
 import * as friendService from '../../api/firendApi'
 import { useLoading } from "../../context/loadingContext";
 import { toast } from "react-toastify";
-import { FRIEND_STATUS_ANNONYMOUS } from "../../config/constants";
+import { FRIEND_STATUS_ANNONYMOUS, FRIEND_STATUS_FRIEND, FRIEND_STATUS_REQUESTER } from "../../config/constants";
 
 function ProfileInfo({ 
             isMe , 
@@ -16,7 +16,8 @@ function ProfileInfo({
             isRequester,
             isAccepter,
             changeStatusWithMe,
-            deleteFriend
+            deleteFriend ,
+            createFriend
           }){
     
     const { startLoading, stopLoading } = useLoading();
@@ -36,9 +37,38 @@ function ProfileInfo({
         toast.error(err.response?.data.message);
       }finally{
         stopLoading();
+      }}
+
+      const handleClickAdd = async () =>{
+        try {
+          startLoading();
+          await friendService.addFriend(id);
+          changeStatusWithMe(FRIEND_STATUS_REQUESTER)
+          toast.success('Success add friend')
+        }catch(err){
+          console.log(err)
+          toast.error(err.response?.data.message);
+        }finally{
+          stopLoading();
+        }
       }
+
       
-    }
+      const handleClickAccept = async () =>{
+        try {
+          startLoading();
+          await friendService.acceptFriend(id);
+          changeStatusWithMe(FRIEND_STATUS_FRIEND)
+          // deleteFriend();
+          createFriend();
+          toast.success('Success accept friend friend')
+        }catch(err){
+          console.log(err)
+          toast.error(err.response?.data.message);
+        }finally{
+          stopLoading();
+        }
+      }
     
     return (
         <>
@@ -70,16 +100,16 @@ function ProfileInfo({
                   <i className="fa-solid fa-user-xmark" /> Unfriend
               </button>)}
             {isAnonymous && (        
-              <button className="btn btn-gray-200" >
-                  <i className="fa-solid fa-user-plus" /> Add Friends
+              <button className="btn btn-gray-200" onClick={handleClickAdd}>
+                  <i className="fa-solid fa-user-plus"  /> Add Friends
               </button>)}  
             {isRequester && (        
-              <button className="btn btn-gray-200" >
+              <button className="btn btn-gray-200" onClick={handleClickDelete} >
                   <i className="fa-solid fa-user-xmark" /> Cancel Request
               </button>)}
             {isAccepter && (  
               <>
-              <button className="btn btn-gray-200 bg-success" onClick={handleClickDelete}>
+              <button className="btn btn-gray-200 bg-success" onClick={handleClickAccept}>
                   <i className="fa-solid fa-user-check" /> Accept
               </button>
               <button className="btn btn-gray-200 ms-3 bg-danger" onClick={handleClickDelete} >
